@@ -20,7 +20,7 @@ class BlueClient {
 		BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
 
 		DatagramSocket clientSocket = new DatagramSocket();
-		InetAddress IPAddress = InetAddress.getByName("localhost");
+		InetAddress IPAddress = InetAddress.getByName("10.109.153.186");
 		//10.109.177.160
 		byte[] sendData = new byte[1024];
 		byte[] receiveData = new byte[1024];
