@@ -8,7 +8,7 @@ class RedClient {
 		BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
 
 		DatagramSocket clientSocket = new DatagramSocket();
-		InetAddress IPAddress = InetAddress.getByName("10.137.5.48");
+		InetAddress IPAddress = InetAddress.getByName("10.109.174.39");
 		byte[] sendData = new byte[1024];
 		byte[] receiveData = new byte[1024];
 		int state = 0;
@@ -30,7 +30,6 @@ class RedClient {
 					sendData = message.getBytes();
 					sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress,9876);
 					clientSocket.send(sendPacket);
-
           System.out.println("State 0 ... connecting to the server.");
 
 					receivePacket = new DatagramPacket(receiveData, receiveData.length);
@@ -84,7 +83,7 @@ class RedClient {
           if (talk)
           {
             System.out.print(clientName);
-            response = inFromUser.readLine();
+            response = clientName + inFromUser.readLine();
             sendData = response.getBytes();
             sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 9876);
             clientSocket.send(sendPacket);
@@ -99,7 +98,7 @@ class RedClient {
   					response = new String(receivePacket.getData());
             response = response.trim();
 
-            if (response.length()>= 7 && response.substring(0,7).equals("Goodbye")) {
+            if (response.length()>= 7 && response.toLowerCase().contains("goodbye")) {
   						state = 3; //prepare to exit the while loop
               System.out.println("*** chat has been ended ***");
   						break;
