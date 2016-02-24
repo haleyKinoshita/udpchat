@@ -74,7 +74,7 @@ class ChatServer2
     					state = 1;
     				}
     				break;
-    				
+
     			case 1: // Wait for second connection
     				System.out.println(state);
     				receivePacket = new DatagramPacket(receiveData, receiveData.length);
@@ -102,11 +102,13 @@ class ChatServer2
     				serverSocket.receive(receivePacket);
     				message = new String(receivePacket.getData());
     				message = message.trim();
+    				System.out.println(message);
 
     				// Check to see if either client sent "Goodbye"
     				if (message.toUpperCase().contains("GOODBYE")) 
     				{
     					state = 3;
+    					break;
     				}
     				IPAddress = receivePacket.getAddress();
     				port = receivePacket.getPort();
