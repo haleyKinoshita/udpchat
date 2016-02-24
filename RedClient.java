@@ -8,7 +8,7 @@ class RedClient {
 		BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
 
 		DatagramSocket clientSocket = new DatagramSocket();
-		InetAddress IPAddress = InetAddress.getByName("10.109.174.39");
+		InetAddress IPAddress = InetAddress.getByName("10.109.153.186");
 		byte[] sendData = new byte[1024];
 		byte[] receiveData = new byte[1024];
 		int state = 0;
@@ -30,6 +30,7 @@ class RedClient {
 					sendData = message.getBytes();
 					sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress,9876);
 					clientSocket.send(sendPacket);
+
           System.out.println("State 0 ... connecting to the server.");
 
 					receivePacket = new DatagramPacket(receiveData, receiveData.length);
@@ -66,7 +67,6 @@ class RedClient {
 						//get message from user and send it to server
 						/*inFromUser = new BufferedReader(new InputStreamReader(System.in));
 						message = inFromUser.readLine();
-
 						sendData = message.getBytes();
 						sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress,9876);
 						clientSocket.send(sendPacket); */
@@ -94,11 +94,11 @@ class RedClient {
           {
             //receive message from other client
             receivePacket = new DatagramPacket(receiveData, receiveData.length);
-  					clientSocket.receive(receivePacket);
-  					response = new String(receivePacket.getData());
+  			clientSocket.receive(receivePacket);
+  			response = new String(receivePacket.getData());
             response = response.trim();
 
-            if (response.length()>= 7 && response.toLowerCase().contains("goodbye")) {
+            if (response.length()>= 7 && response.substring(0,7).equals("Goodbye")) {
   						state = 3; //prepare to exit the while loop
               System.out.println("*** chat has been ended ***");
   						break;
