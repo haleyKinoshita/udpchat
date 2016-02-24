@@ -1,14 +1,4 @@
-/**
-*	UDP Server Program
-*	Listens on two UDP ports
-*	Receives a line of input from a UDP client
-* Sends that line to the other client
-* Clients message back and forth until they exit the program
-*
-*	@author: Julien Fournell
-* Partners: Josh Graves and Haley Kinoshita
-@	version: 0.2
-*/
+
 
 import java.io.*;
 import java.net.*;
@@ -24,7 +14,8 @@ class ChatServer2
 		InetAddress IPAddress=null, IPAddress1=null, IPAddress2=null;
 
 		DatagramPacket receivePacket = null;
-    	DatagramPacket sendPacket = null;
+    	DatagramPacket sendPacket1 = null;
+      DatagramPacket sendPacket2 = null;
 
     	String message = "";
     	String response = "";
@@ -41,7 +32,7 @@ class ChatServer2
 	   		serverSocket = new DatagramSocket(9876);
       		System.out.println("Starting Server");
     	}
-	
+
     	catch(Exception e)
 		{
 			System.out.println("Failed to open UDP socket");
@@ -62,15 +53,15 @@ class ChatServer2
     				serverSocket.receive(receivePacket);
     				message = new String(receivePacket.getData());
     				message = message.trim();
-    				if (message.toUpperCase().contains("HELLO RED") || message.toUpperCase().contains("HELLO BLUE")) 
+    				if (message.toUpperCase().contains("HELLO RED") || message.toUpperCase().contains("HELLO BLUE"))
     				{
     					System.out.println(message);
     					response = "100";
     					sendData = response.getBytes();
     					IPAddress1 = receivePacket.getAddress();
     					port1 = receivePacket.getPort();
-    					sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress1, port1);
-    					serverSocket.send(sendPacket);
+    					sendPacket1 = new DatagramPacket(sendData, sendData.length, IPAddress1, port1);
+    					serverSocket.send(sendPacket1);
     					state = 1;
     				}
     				break;
@@ -81,17 +72,17 @@ class ChatServer2
     				serverSocket.receive(receivePacket);
     				message = new String(receivePacket.getData());
     				message = message.trim();
-    				if (message.toUpperCase().contains("HELLO RED") || message.toUpperCase().contains("HELLO BLUE")) 
+    				if (message.toUpperCase().contains("HELLO RED") || message.toUpperCase().contains("HELLO BLUE"))
     				{
     					System.out.println(message);
     					response = "200";
     					sendData = response.getBytes();
     					IPAddress2 = receivePacket.getAddress();
     					port2 = receivePacket.getPort();
-    					sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress1, port1);
-    					serverSocket.send(sendPacket);
-    					sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress2, port2);
-    					serverSocket.send(sendPacket);
+    					sendPacket1 = new DatagramPacket(sendData, sendData.length, IPAddress1, port1);
+    					serverSocket.send(sendPacket1);
+    					sendPacket2 = new DatagramPacket(sendData, sendData.length, IPAddress2, port2);
+    					serverSocket.send(sendPacket2);
     					state = 2;
     				}
     				break;
@@ -105,7 +96,7 @@ class ChatServer2
     				System.out.println(message);
 
     				// Check to see if either client sent "Goodbye"
-    				if (message.toUpperCase().contains("GOODBYE")) 
+    				if (message.toUpperCase().contains("GOODBYE"))
     				{
     					state = 3;
     					break;
@@ -113,31 +104,28 @@ class ChatServer2
     				IPAddress = receivePacket.getAddress();
     				port = receivePacket.getPort();
 
-    				if ((port==port1)&&(IPAddress.equals(IPAddress1))) 
+            sendPacket1 = new DatagramPacket(sendData, sendData.length, IPAddress1, port1);
+            sendPacket2 = new DatagramPacket(sendData, sendData.length, IPAddress2, port2);
+
+    				if ((port==port1)&&(IPAddress.equals(IPAddress1)))
     				{
-    					IPAddress = IPAddress2;
-    					port = port2;
+              sendData = receivePacket.getData();
+      				sendPacket2 = new DatagramPacket(sendData, sendData.length, IPAddress2, port2);
+      				serverSocket.send(sendPacket2);
     				}
     				else
     				{
-    					IPAddress = IPAddress1;
-    					port = port1;
+              sendData = receivePacket.getData();
+      				sendPacket1 = new DatagramPacket(sendData, sendData.length, IPAddress1, port1);
+      				serverSocket.send(sendPacket1);
     				}
-
-    				sendData = receivePacket.getData();
-    				sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, port);
-    				serverSocket.send(sendPacket);
-    				break;
-
-    			default:
-    				break;
     		}
     	}
     	sendData = "Goodbye".getBytes();
-    	sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress1, port1);
-    	serverSocket.send(sendPacket);
-    	sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress2, port2);
-    	serverSocket.send(sendPacket);
+    	sendPacket1 = new DatagramPacket(sendData, sendData.length, IPAddress1, port1);
+    	serverSocket.send(sendPacket1);
+    	sendPacket2 = new DatagramPacket(sendData, sendData.length, IPAddress2, port2);
+    	serverSocket.send(sendPacket2);
     	serverSocket.close();
 	}
 }
